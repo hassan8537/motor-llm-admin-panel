@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 const MailToAdmin = () => {
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSend = () => {
     // Placeholder: Replace with your actual email sending logic
     alert(`Subject: ${subject}\nMessage: ${message}`);
-    setSubject('');
-    setMessage('');
+    setSubject("");
+    setMessage("");
   };
 
   return (
@@ -20,7 +20,7 @@ const MailToAdmin = () => {
         <input
           type="text"
           value={subject}
-          onChange={(e) => setSubject(e.target.value)}
+          onChange={e => setSubject(e.target.value)}
           className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
           placeholder="Enter subject"
         />
@@ -31,18 +31,18 @@ const MailToAdmin = () => {
         <textarea
           rows={5}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={e => setMessage(e.target.value)}
           className="w-full border border-gray-300 rounded-md p-2 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
           placeholder="Type your message to admin..."
         ></textarea>
       </div>
-    <div className='justify-center flex '>
-      <button
-        onClick={handleSend}
-        className="bg-gray-200 text-black px-6 py-2 rounded-3xl hover:bg-gray-700 hover:text-white"
-      >
-        Send Message
-      </button>
+      <div className="justify-center flex ">
+        <button
+          onClick={handleSend}
+          className="bg-gray-200 text-black px-6 py-2 rounded-3xl hover:bg-gray-700 hover:text-white"
+        >
+          Send Message
+        </button>
       </div>
     </div>
   );

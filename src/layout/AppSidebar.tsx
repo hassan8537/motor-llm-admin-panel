@@ -3,15 +3,12 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
   PageIcon,
-  PieChartIcon,
-  PlugInIcon,
   TableIcon,
   UserCircleIcon,
 } from "../icons";
@@ -115,11 +112,11 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
+    ["main", "others"].forEach(menuType => {
       const items = menuType === "main" ? navItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
+          nav.subItems.forEach(subItem => {
             if (isActive(subItem.path)) {
               setOpenSubmenu({
                 type: menuType as "main" | "others",
@@ -141,7 +138,7 @@ const AppSidebar: React.FC = () => {
     if (openSubmenu !== null) {
       const key = `${openSubmenu.type}-${openSubmenu.index}`;
       if (subMenuRefs.current[key]) {
-        setSubMenuHeight((prevHeights) => ({
+        setSubMenuHeight(prevHeights => ({
           ...prevHeights,
           [key]: subMenuRefs.current[key]?.scrollHeight || 0,
         }));
@@ -150,7 +147,7 @@ const AppSidebar: React.FC = () => {
   }, [openSubmenu]);
 
   const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
-    setOpenSubmenu((prevOpenSubmenu) => {
+    setOpenSubmenu(prevOpenSubmenu => {
       if (
         prevOpenSubmenu &&
         prevOpenSubmenu.type === menuType &&
@@ -227,7 +224,7 @@ const AppSidebar: React.FC = () => {
           )}
           {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
             <div
-              ref={(el) => {
+              ref={el => {
                 subMenuRefs.current[`${menuType}-${index}`] = el;
               }}
               className="overflow-hidden transition-all duration-300"
@@ -239,7 +236,7 @@ const AppSidebar: React.FC = () => {
               }}
             >
               <ul className="mt-2 space-y-1 ml-9">
-                {nav.subItems.map((subItem) => (
+                {nav.subItems.map(subItem => (
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}
@@ -287,7 +284,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-[#CCCCCC] dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-[#CCCCCC] dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"

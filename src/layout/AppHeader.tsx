@@ -1,23 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Link } from "react-router";
-import { useSidebar } from "../context/SidebarContext";
-import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
-import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
-
-  const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
-
-  const handleToggle = () => {
-    if (window.innerWidth >= 1024) {
-      toggleSidebar();
-    } else {
-      toggleMobileSidebar();
-    }
-  };
 
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
@@ -81,11 +68,11 @@ const AppHeader: React.FC = () => {
               </svg>
             )}
           </button> */}
-<div className="flex items-center space-x-2">
-  <h6 className="text-sm font-medium">Dashboard</h6>
-  <span className="text-gray-400">&gt;</span>
-  <h6 className="text-sm font-medium">Salesperson</h6>
-</div>
+          <div className="flex items-center space-x-2">
+            <h6 className="text-sm font-medium">Dashboard</h6>
+            <span className="text-gray-400">&gt;</span>
+            <h6 className="text-sm font-medium">Salesperson</h6>
+          </div>
 
           <Link to="/" className="lg:hidden">
             <img
