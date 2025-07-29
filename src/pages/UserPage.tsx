@@ -321,8 +321,6 @@ const UsersPage: React.FC = () => {
     switch (role) {
       case "admin":
         return "bg-red-100 text-red-800";
-      case "moderator":
-        return "bg-yellow-100 text-yellow-800";
       default:
         return "bg-blue-100 text-blue-800";
     }
@@ -438,7 +436,6 @@ const UsersPage: React.FC = () => {
           >
             <option value="">All Roles</option>
             <option value="admin">Admin</option>
-            <option value="moderator">Moderator</option>
             <option value="user">User</option>
           </select>
         </div>
@@ -593,7 +590,6 @@ const UsersPage: React.FC = () => {
                         className="border rounded px-2 py-1 w-full text-sm"
                       >
                         <option value="user">User</option>
-                        <option value="moderator">Moderator</option>
                         <option value="admin">Admin</option>
                       </select>
                     </td>
@@ -1117,8 +1113,6 @@ const UsersPage: React.FC = () => {
                 className="w-full border rounded px-3 py-2"
               >
                 <option value="user">User</option>
-                <option value="moderator">Moderator</option>
-                <option value="admin">Admin</option>
               </select>
               <div className="flex gap-2">
                 <button
