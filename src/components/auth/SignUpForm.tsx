@@ -87,14 +87,17 @@ export default function SignInForm() {
                     </span>
                   </div>
                 </div>
-                {/* <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       id="diamondise"
                       className="w-4 h-4 text-black rounded bg-transparent focus:ring-black"
                     />
-                    <label htmlFor="diamondise" className="ml-2 text-sm text-gray-700">
+                    <label
+                      htmlFor="diamondise"
+                      className="ml-2 text-sm text-gray-700"
+                    >
                       Remember Me
                     </label>
                   </div>
@@ -104,15 +107,15 @@ export default function SignInForm() {
                   >
                     Forgot Password?
                   </Link>
-                </div> */}
-                {/* <div className="flex justify-center">
-                <button
-                  type="submit"
-                  className="w-40 py-2 mt-4 text-sm font-medium text-white bg-[#333333] rounded-3xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
-                >
-                  Sign Up
-                </button>
-                </div> */}
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    type="submit"
+                    className="w-40 py-2 mt-4 text-sm font-medium text-white bg-[#333333] rounded-3xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                  >
+                    Sign Up
+                  </button>
+                </div>
               </div>
             </form>
           </div>

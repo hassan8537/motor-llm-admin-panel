@@ -43,9 +43,6 @@ const ProfilePage = ({ userId }: ProfilePageProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>(
-    "./images/performance-png.png"
-  );
   const [formData, setFormData] = useState<FormData>({
     email: "",
     currentPassword: "",
@@ -203,12 +200,12 @@ const ProfilePage = ({ userId }: ProfilePageProps) => {
   const handleModalClose = (): void => {
     if (!saving) {
       // Reset form when closing modal
-      setFormData(prev => ({
+      setFormData({
         email: userData?.Email || "",
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
-      }));
+      });
       setError(null);
       closeModal();
     }
@@ -293,7 +290,7 @@ const ProfilePage = ({ userId }: ProfilePageProps) => {
           <div className="relative w-24 h-24 mb-3 my-6">
             <div className="w-full h-full rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
               <img
-                src={profileImage}
+                src={"./images/performance-png.png"}
                 alt="Profile"
                 className="w-full h-full object-cover"
                 onError={e => {
