@@ -15,7 +15,7 @@ export default function UserDropdown() {
       >
         <span className="block mr-1 text-white text-lg">Hi, Alex!</span>
 
-        <Link to="/profile-salesperson">
+        <Link to="/profile">
           <span className="mr-3 ms-2 overflow-hidden rounded-full h-11 w-11 cursor-pointer flex items-center justify-center bg-white">
             <img
               src="/images/performance-png.png"

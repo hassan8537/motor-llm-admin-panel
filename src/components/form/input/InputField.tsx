@@ -16,6 +16,8 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string;
+  minLength?: number;
+  maxLength?: number;
 }
 
 const Input: FC<InputProps> = ({
@@ -33,6 +35,8 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+  minLength = 0,
+  maxLength = 255,
 }) => {
   let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${className}`;
 
@@ -60,6 +64,8 @@ const Input: FC<InputProps> = ({
         step={step}
         disabled={disabled}
         className={inputClasses}
+        maxLength={maxLength}
+        minLength={minLength}
       />
 
       {hint && (

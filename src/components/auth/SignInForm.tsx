@@ -188,7 +188,7 @@ export default function SignInForm() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
+                {/* <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -212,7 +212,7 @@ export default function SignInForm() {
                   >
                     Forgot Password?
                   </Link>
-                </div>
+                </div> */}
 
                 <div className="flex justify-center">
                   <button

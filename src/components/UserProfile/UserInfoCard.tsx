@@ -1,16 +1,250 @@
+import { useState, useEffect } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import BASE_URL from "../../config";
 
-export default function UserInfoCard() {
+const baseUrl = BASE_URL;
+const version = "/api/v1";
+
+// Type definitions
+interface SocialLinks {
+  facebook: string;
+  twitter: string;
+  linkedin: string;
+  instagram: string;
+}
+
+interface UserData {
+  UpdatedAt: string;
+  Role: string;
+  IsActive: boolean;
+  SessionToken: string;
+  Email: string;
+  EntityType: string;
+  SessionExpiry: string;
+  UserId: string;
+  SK: string;
+  FirstName: string;
+  LastLogin: string;
+  PK: string;
+  LastName: string;
+  CreatedAt: string;
+  Phone?: string;
+  Bio?: string;
+  SocialLinks?: SocialLinks;
+}
+
+interface ApiResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: UserData;
+}
+
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  bio: string;
+  socialLinks: SocialLinks;
+}
+
+interface UserInfoCardProps {
+  userId: string;
+}
+
+export default function UserInfoCard({ userId }: UserInfoCardProps) {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    bio: "",
+    socialLinks: {
+      facebook: "",
+      twitter: "",
+      linkedin: "",
+      instagram: "",
+    },
+  });
+
+  // Fetch user data
+  useEffect(() => {
+    const fetchUserData = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`${baseUrl}${version}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add authorization header if needed
+            // 'Authorization': `Bearer ${token}`
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result: ApiResponse = await response.json();
+
+        if (result.success && result.data) {
+          setUserData(result.data);
+          // Initialize form data with API data
+          setFormData({
+            firstName: result.data.FirstName || "",
+            lastName: result.data.LastName || "",
+            email: result.data.Email || "",
+            phone: result.data.Phone || "",
+            bio: result.data.Bio || "",
+            socialLinks: {
+              facebook: result.data.SocialLinks?.facebook || "",
+              twitter: result.data.SocialLinks?.twitter || "",
+              linkedin: result.data.SocialLinks?.linkedin || "",
+              instagram: result.data.SocialLinks?.instagram || "",
+            },
+          });
+        } else {
+          throw new Error(result.message || "Failed to fetch user data");
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        console.error("Error fetching user data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
+
+  const handleInputChange = (field: string, value: string): void => {
+    if (field.includes(".")) {
+      const [parent, child] = field.split(".");
+      if (parent === "socialLinks") {
+        setFormData(prev => ({
+          ...prev,
+          socialLinks: {
+            ...prev.socialLinks,
+            [child]: value,
+          },
+        }));
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
   };
+
+  const handleSave = async (): Promise<void> => {
+    try {
+      setSaving(true);
+      setError(null);
+
+      const updatePayload = {
+        FirstName: formData.firstName,
+        LastName: formData.lastName,
+        Email: formData.email,
+        Phone: formData.phone,
+        Bio: formData.bio,
+        SocialLinks: formData.socialLinks,
+      };
+
+      const response = await fetch(`${baseUrl}${version}/users/${userId}`, {
+        method: "PUT", // or PATCH depending on your API
+        headers: {
+          "Content-Type": "application/json",
+          // Add authorization header if needed
+          // 'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result: ApiResponse = await response.json();
+
+      if (result.success && result.data) {
+        // Update local state with new data
+        setUserData(result.data);
+        console.log("Changes saved successfully!");
+        closeModal();
+      } else {
+        throw new Error(result.message || "Failed to save changes");
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unknown error occurred";
+      setError(errorMessage);
+      console.error("Error saving changes:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleModalClose = (): void => {
+    if (!saving) {
+      closeModal();
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+        <div className="animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4 dark:bg-gray-700"></div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i}>
+                <div className="h-3 bg-gray-200 rounded w-1/3 mb-2 dark:bg-gray-700"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3 dark:bg-gray-700"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-5 border border-red-200 rounded-2xl bg-red-50 dark:border-red-800 dark:bg-red-900/20 lg:p-6">
+        <p className="text-red-600 dark:text-red-400">
+          Error loading user data: {error}
+        </p>
+      </div>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+        <p className="text-gray-500 dark:text-gray-400">
+          No user data available
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -25,7 +259,7 @@ export default function UserInfoCard() {
                 First Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Musharof
+                {userData.FirstName || "Not provided"}
               </p>
             </div>
 
@@ -34,7 +268,7 @@ export default function UserInfoCard() {
                 Last Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Chowdhury
+                {userData.LastName || "Not provided"}
               </p>
             </div>
 
@@ -43,7 +277,7 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                randomuser@pimjo.com
+                {userData.Email || "Not provided"}
               </p>
             </div>
 
@@ -52,7 +286,7 @@ export default function UserInfoCard() {
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+                {userData.Phone || "Not provided"}
               </p>
             </div>
 
@@ -61,7 +295,7 @@ export default function UserInfoCard() {
                 Bio
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Team Manager
+                {userData.Bio || "Not provided"}
               </p>
             </div>
           </div>
@@ -69,7 +303,8 @@ export default function UserInfoCard() {
 
         <button
           onClick={openModal}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
         >
           <svg
             className="fill-current"
@@ -90,7 +325,11 @@ export default function UserInfoCard() {
         </button>
       </div>
 
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+      <Modal
+        isOpen={isOpen}
+        onClose={handleModalClose}
+        className="max-w-[700px] m-4"
+      >
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -100,7 +339,14 @@ export default function UserInfoCard() {
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
+
+          {error && (
+            <div className="mx-2 mb-4 p-3 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+
+          <form className="flex flex-col" onSubmit={e => e.preventDefault()}>
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
               <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
@@ -109,32 +355,72 @@ export default function UserInfoCard() {
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div>
-                    <Label>Facebook</Label>
+                    <Label htmlFor="facebook">Facebook</Label>
                     <Input
-                      type="text"
-                      value="https://www.facebook.com/PimjoHQ"
+                      id="facebook"
+                      type="url"
+                      placeholder="https://facebook.com/username"
+                      value={formData.socialLinks.facebook}
+                      onChange={e =>
+                        handleInputChange(
+                          "socialLinks.facebook",
+                          e.target.value
+                        )
+                      }
+                      disabled={saving}
                     />
                   </div>
 
                   <div>
-                    <Label>X.com</Label>
-                    <Input type="text" value="https://x.com/PimjoHQ" />
-                  </div>
-
-                  <div>
-                    <Label>Linkedin</Label>
+                    <Label htmlFor="twitter">X.com</Label>
                     <Input
-                      type="text"
-                      value="https://www.linkedin.com/company/pimjo"
+                      id="twitter"
+                      type="url"
+                      placeholder="https://x.com/username"
+                      value={formData.socialLinks.twitter}
+                      onChange={e =>
+                        handleInputChange("socialLinks.twitter", e.target.value)
+                      }
+                      disabled={saving}
                     />
                   </div>
 
                   <div>
-                    <Label>Instagram</Label>
-                    <Input type="text" value="https://instagram.com/PimjoHQ" />
+                    <Label htmlFor="linkedin">LinkedIn</Label>
+                    <Input
+                      id="linkedin"
+                      type="url"
+                      placeholder="https://linkedin.com/in/username"
+                      value={formData.socialLinks.linkedin}
+                      onChange={e =>
+                        handleInputChange(
+                          "socialLinks.linkedin",
+                          e.target.value
+                        )
+                      }
+                      disabled={saving}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="instagram">Instagram</Label>
+                    <Input
+                      id="instagram"
+                      type="url"
+                      placeholder="https://instagram.com/username"
+                      value={formData.socialLinks.instagram}
+                      onChange={e =>
+                        handleInputChange(
+                          "socialLinks.instagram",
+                          e.target.value
+                        )
+                      }
+                      disabled={saving}
+                    />
                   </div>
                 </div>
               </div>
+
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Personal Information
@@ -142,38 +428,83 @@ export default function UserInfoCard() {
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>First Name</Label>
-                    <Input type="text" value="Musharof" />
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      placeholder="Enter first name"
+                      value={formData.firstName}
+                      onChange={e =>
+                        handleInputChange("firstName", e.target.value)
+                      }
+                      disabled={saving}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Name</Label>
-                    <Input type="text" value="Chowdhury" />
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      placeholder="Enter last name"
+                      value={formData.lastName}
+                      onChange={e =>
+                        handleInputChange("lastName", e.target.value)
+                      }
+                      disabled={saving}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Email Address</Label>
-                    <Input type="text" value="randomuser@pimjo.com" />
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter email address"
+                      value={formData.email}
+                      onChange={e => handleInputChange("email", e.target.value)}
+                      disabled={saving}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" value="+09 363 398 46" />
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="Enter phone number"
+                      value={formData.phone}
+                      onChange={e => handleInputChange("phone", e.target.value)}
+                      disabled={saving}
+                    />
                   </div>
 
                   <div className="col-span-2">
-                    <Label>Bio</Label>
-                    <Input type="text" value="Team Manager" />
+                    <Label htmlFor="bio">Bio</Label>
+                    <Input
+                      id="bio"
+                      type="text"
+                      placeholder="Enter a brief bio"
+                      value={formData.bio}
+                      onChange={e => handleInputChange("bio", e.target.value)}
+                      disabled={saving}
+                    />
                   </div>
                 </div>
               </div>
             </div>
+
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleModalClose}
+                disabled={saving}
+              >
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
+              <Button size="sm" onClick={handleSave} disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>

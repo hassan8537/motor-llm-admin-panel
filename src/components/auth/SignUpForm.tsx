@@ -21,13 +21,13 @@ export default function SignInForm() {
       <div className="w-full max-w-[880px] p-8 bg-[#CCCCCC] rounded-2xl shadow-sm">
         {/* Logo */}
         <div className=" flex justify-center">
-        <div className="my-10 text-center w-[330px]">
-          <img
-            src="./images/logo/GeneysLogo.png" 
-            alt="motor Logo"
-            className="mx-auto h-20 w-auto" 
-          />
-        </div>
+          <div className="my-10 text-center w-[330px]">
+            <img
+              src="./images/logo/GeneysLogo.png"
+              alt="motor Logo"
+              className="mx-auto h-20 w-auto"
+            />
+          </div>
         </div>
 
         {/* Role Selector */}
@@ -35,19 +35,26 @@ export default function SignInForm() {
           <div className="flex mb-6 min-w-[340px] max-w-[300px]">
             <button
               onClick={() => setRole("user")}
-              className={`flex-1 py-2 text-sm ${role === "user" ? "font-bold text-white border-b-2 border-black bg-[#333333]" : "text-gray-500 hover:bg-gray-100 border"} rounded-lg transition-all`}
+              className={`flex-1 py-2 text-sm ${
+                role === "user"
+                  ? "font-bold text-white border-b-2 border-black bg-[#333333]"
+                  : "text-gray-500 hover:bg-gray-100 border"
+              } rounded-lg transition-all`}
             >
               SalesPerson
             </button>
             <button
               onClick={() => setRole("admin")}
-              className={`flex-1 py-2 text-sm ${role === "admin" ? "font-bold text-white border-b-2 border-black bg-[#333333]" : "text-gray-500 hover:bg-gray-100 border"} rounded-lg transition-all`}
+              className={`flex-1 py-2 text-sm ${
+                role === "admin"
+                  ? "font-bold text-white border-b-2 border-black bg-[#333333]"
+                  : "text-gray-500 hover:bg-gray-100 border"
+              } rounded-lg transition-all`}
             >
               Admin
             </button>
           </div>
         </div>
-
 
         {/* Form */}
         <div className="justify-center flex">
@@ -55,7 +62,6 @@ export default function SignInForm() {
             <form onSubmit={handleSignIn}>
               <div className="space-y-5">
                 <div>
-                  
                   <input
                     type="text"
                     placeholder="Username"
@@ -63,7 +69,6 @@ export default function SignInForm() {
                   />
                 </div>
                 <div>
-                 
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -82,7 +87,7 @@ export default function SignInForm() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between pt-2">
+                {/* <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -99,15 +104,15 @@ export default function SignInForm() {
                   >
                     Forgot Password?
                   </Link>
-                </div>
-                <div className="flex justify-center">
+                </div> */}
+                {/* <div className="flex justify-center">
                 <button
                   type="submit"
                   className="w-40 py-2 mt-4 text-sm font-medium text-white bg-[#333333] rounded-3xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
                 >
                   Sign Up
                 </button>
-                </div>
+                </div> */}
               </div>
             </form>
           </div>

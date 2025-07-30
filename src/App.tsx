@@ -6,15 +6,18 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import UserDashboard from "./pages/Dashboard/UserDashboard";
 import UserLayout from "./layout/UserLayout";
 import UserDetail from "./pages/UserDetail";
-import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
 import UsersPage from "./pages/UserPage";
 import UserFilesPage from "./pages/UserFilesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import ProfilePage from "./pages/Profile";
 
 export default function App() {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  console.log({ user });
+
   return (
     <>
       <Router>
@@ -50,9 +53,12 @@ export default function App() {
             <Route path="/users" element={<UsersPage />} />
             <Route path="/users/:userId/files" element={<UserFilesPage />} />
             <Route path="/users/:userId" element={<UserDetail />} />
-            <Route path="/profile-admin" element={<Profile />} />
             <Route path="/settings-admin" element={<Settings />} />
             <Route path="/logout-admin" element={<Logout />} />
+            <Route
+              path="/profile"
+              element={<ProfilePage userId={user.UserId} />}
+            />
           </Route>
 
           {/* Fallback Route - Also protected */}
